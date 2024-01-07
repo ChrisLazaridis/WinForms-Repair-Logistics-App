@@ -1,0 +1,13 @@
+# Ignore compiled files
+*.dll
+*.exe
+
+# Ignore user-specific files and directories
+bin/
+obj/
+
+# Ignore configuration files
+F1DataAccessConfiguration.cs
+#ignore vs and jb files
+.vs
+.idea
