@@ -32,6 +32,7 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonCustomer = new System.Windows.Forms.Button();
             this.buttonDevice = new System.Windows.Forms.Button();
+            this.buttonRepair = new System.Windows.Forms.Button();
             this.buttonBoth = new System.Windows.Forms.Button();
             this.buttonDeleteCustomer = new System.Windows.Forms.Button();
             this.buttonDeleteDevice = new System.Windows.Forms.Button();
@@ -48,7 +49,7 @@
             this.buttonSearchByName = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
-            this.buttonRepair = new System.Windows.Forms.Button();
+            this.buttonShowRepair = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -78,6 +79,7 @@
             this.flowLayoutPanel1.Controls.Add(this.buttonDeleteCustomer);
             this.flowLayoutPanel1.Controls.Add(this.buttonDeleteDevice);
             this.flowLayoutPanel1.Controls.Add(this.button1);
+            this.flowLayoutPanel1.Controls.Add(this.buttonShowRepair);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -104,6 +106,17 @@
             this.buttonDevice.Text = "Add Device";
             this.buttonDevice.UseVisualStyleBackColor = true;
             this.buttonDevice.Click += new System.EventHandler(this.buttonDevice_Click);
+            // 
+            // buttonRepair
+            // 
+            this.buttonRepair.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.buttonRepair.Location = new System.Drawing.Point(3, 71);
+            this.buttonRepair.Name = "buttonRepair";
+            this.buttonRepair.Size = new System.Drawing.Size(83, 62);
+            this.buttonRepair.TabIndex = 6;
+            this.buttonRepair.Text = "Add Repair";
+            this.buttonRepair.UseVisualStyleBackColor = true;
+            this.buttonRepair.Click += new System.EventHandler(this.buttonRepair_Click);
             // 
             // buttonBoth
             // 
@@ -273,16 +286,15 @@
             this.textBoxName.Size = new System.Drawing.Size(167, 20);
             this.textBoxName.TabIndex = 0;
             // 
-            // buttonRepair
+            // buttonShowRepair
             // 
-            this.buttonRepair.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.buttonRepair.Location = new System.Drawing.Point(3, 71);
-            this.buttonRepair.Name = "buttonRepair";
-            this.buttonRepair.Size = new System.Drawing.Size(83, 62);
-            this.buttonRepair.TabIndex = 6;
-            this.buttonRepair.Text = "Add Repair";
-            this.buttonRepair.UseVisualStyleBackColor = true;
-            this.buttonRepair.Click += new System.EventHandler(this.buttonRepair_Click);
+            this.buttonShowRepair.Location = new System.Drawing.Point(92, 207);
+            this.buttonShowRepair.Name = "buttonShowRepair";
+            this.buttonShowRepair.Size = new System.Drawing.Size(83, 62);
+            this.buttonShowRepair.TabIndex = 7;
+            this.buttonShowRepair.Text = "Show All Repairs";
+            this.buttonShowRepair.UseVisualStyleBackColor = true;
+            this.buttonShowRepair.Click += new System.EventHandler(this.buttonShowRepair_Click);
             // 
             // Form1
             // 
@@ -297,6 +309,7 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
+
         }
 
         private System.Windows.Forms.Button buttonRepair;
@@ -327,6 +340,7 @@
         private System.Windows.Forms.Button buttonDeleteCustomer;
         private System.Windows.Forms.Button buttonDeleteDevice;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonShowRepair;
     }
 }
 

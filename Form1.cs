@@ -200,5 +200,13 @@ namespace OptionCo
             GetData();
             Refresh();
         }
+
+        private void buttonShowRepair_Click(object sender, EventArgs e)
+        {
+            Form9 form9 = new Form9(_customers, _devices, _repairs);
+            form9.ShowDialog();
+            GetData();
+            Refresh();
+        }
     }
 }

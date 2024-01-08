@@ -126,8 +126,7 @@
             "TV",
             "Monitor",
             "Scanner",
-            "Other",
-            ""});
+            "Other"});
             this.comboBox1.Location = new System.Drawing.Point(139, 83);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);

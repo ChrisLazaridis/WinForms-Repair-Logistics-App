@@ -14,6 +14,7 @@ namespace OptionCo
     public partial class Form4 : Form
     {
         private bool _isFinished = false;
+        private bool _isOther = false;
         public Form4()
         {
             InitializeComponent();
@@ -84,6 +85,18 @@ namespace OptionCo
                         "INSERT INTO Devices (SerialKey, CustomerId, DeviceType) VALUES (@Serial, @CustomerId, @DeviceType)";
                     cmd.Parameters.AddWithValue("@Serial", textBoxSerial.Text);
                     cmd.Parameters.AddWithValue("@CustomerId", customerId);
+                    switch (_isOther)
+                    {
+                        case true when textBoxOther.Text != "":
+                            cmd.Parameters.AddWithValue("@DeviceType", textBoxOther.Text);
+                            break;
+                        case false:
+                            cmd.Parameters.AddWithValue("@DeviceType", comboBox1.Text);
+                            break;
+                        default:
+                            cmd.Parameters.AddWithValue("@DeviceType", comboBox1.Text);
+                            break;
+                    }
                     cmd.Parameters.AddWithValue("@DeviceType", comboBox1.SelectedIndex.ToString());
                     cmd.ExecuteNonQuery();
                     cmd.CommandText = "SELECT * FROM Devices WHERE SerialKey = @Serial";
@@ -122,6 +135,22 @@ namespace OptionCo
                 MessageBox.Show(exception.Message);
             }
             
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == 8)
+            {
+                textBoxOther.Visible = true;
+                textBoxOther.Enabled = true;
+                _isOther = true;
+            }
+            else
+            {
+                textBoxOther.Visible = false;
+                textBoxOther.Enabled = false;
+                _isOther = false;
+            }
         }
     }
 }

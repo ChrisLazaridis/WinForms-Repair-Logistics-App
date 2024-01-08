@@ -65,11 +65,17 @@ namespace OptionCo
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedIndex.ToString() == "other")
+            if (comboBox1.SelectedIndex == 8)
             {
                 textBoxOther.Visible = true;
                 textBoxOther.Enabled = true;
                 _isOther = true;
+            }
+            else
+            {
+                textBoxOther.Visible = false;
+                textBoxOther.Enabled = false;
+                _isOther = false;
             }
         }
 
