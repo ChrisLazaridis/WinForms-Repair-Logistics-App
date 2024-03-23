@@ -37,6 +37,7 @@
             this.buttonDeleteCustomer = new System.Windows.Forms.Button();
             this.buttonDeleteDevice = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.buttonShowRepair = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.listBox3 = new System.Windows.Forms.ListBox();
             this.listBox2 = new System.Windows.Forms.ListBox();
@@ -49,7 +50,9 @@
             this.buttonSearchByName = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
-            this.buttonShowRepair = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -159,8 +162,21 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // buttonShowRepair
+            // 
+            this.buttonShowRepair.Location = new System.Drawing.Point(92, 207);
+            this.buttonShowRepair.Name = "buttonShowRepair";
+            this.buttonShowRepair.Size = new System.Drawing.Size(83, 62);
+            this.buttonShowRepair.TabIndex = 7;
+            this.buttonShowRepair.Text = "Show All Repairs";
+            this.buttonShowRepair.UseVisualStyleBackColor = true;
+            this.buttonShowRepair.Click += new System.EventHandler(this.buttonShowRepair_Click);
+            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.dateTimePicker1);
+            this.panel1.Controls.Add(this.comboBox3);
+            this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.listBox3);
             this.panel1.Controls.Add(this.listBox2);
             this.panel1.Controls.Add(this.buttonSearchBySerial);
@@ -286,15 +302,40 @@
             this.textBoxName.Size = new System.Drawing.Size(167, 20);
             this.textBoxName.TabIndex = 0;
             // 
-            // buttonShowRepair
+            // button2
             // 
-            this.buttonShowRepair.Location = new System.Drawing.Point(92, 207);
-            this.buttonShowRepair.Name = "buttonShowRepair";
-            this.buttonShowRepair.Size = new System.Drawing.Size(83, 62);
-            this.buttonShowRepair.TabIndex = 7;
-            this.buttonShowRepair.Text = "Show All Repairs";
-            this.buttonShowRepair.UseVisualStyleBackColor = true;
-            this.buttonShowRepair.Click += new System.EventHandler(this.buttonShowRepair_Click);
+            this.button2.Enabled = false;
+            this.button2.Location = new System.Drawing.Point(3, 340);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(117, 23);
+            this.button2.TabIndex = 11;
+            this.button2.Text = "Change Status";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Items.AddRange(new object[] {
+            "Pending",
+            "Completed Repair",
+            "Finished"});
+            this.comboBox3.Location = new System.Drawing.Point(7, 369);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(121, 21);
+            this.comboBox3.TabIndex = 47;
+            this.comboBox3.Visible = false;
+            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Enabled = false;
+            this.dateTimePicker1.Location = new System.Drawing.Point(7, 397);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(163, 20);
+            this.dateTimePicker1.TabIndex = 48;
+            this.dateTimePicker1.Visible = false;
             // 
             // Form1
             // 
@@ -341,6 +382,9 @@
         private System.Windows.Forms.Button buttonDeleteDevice;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button buttonShowRepair;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
     }
 }
 

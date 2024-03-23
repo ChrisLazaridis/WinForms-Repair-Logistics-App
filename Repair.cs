@@ -12,44 +12,44 @@
 
         public int Id
         {
-            get { return _id; }
-            set { _id = value; }
+            get => _id;
+            set => _id = value;
         }
 
         public string Description
         {
-            get { return _description; }
-            set { _description = value; }
+            get => _description;
+            set => _description = value;
         }
 
         public string DateIn
         {
-            get { return _dateIn; }
-            set { _dateIn = value; }
+            get => _dateIn;
+            set => _dateIn = value;
         }
 
         public string DateOut
         {
-            get { return _dateOut; }
-            set { _dateOut = value; }
+            get => _dateOut;
+            set => _dateOut = value;
         }
 
         public string Status
         {
-            get { return _status; }
-            set { _status = value; }
+            get => _status;
+            set => _status = value;
         }
 
         public int CustomerId
         {
-            get { return _customerId; }
-            set { _customerId = value; }
+            get => _customerId;
+            set => _customerId = value;
         }
 
         public int DeviceId
         {
-            get { return _deviceId; }
-            set { _deviceId = value; }
+            get => _deviceId;
+            set => _deviceId = value;
         }
         
 

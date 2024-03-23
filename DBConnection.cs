@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace OptionCo
+﻿namespace OptionCo
 {
     public class DBConnection(string name)
     {

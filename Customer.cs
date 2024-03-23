@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace OptionCo
 {
@@ -15,38 +14,38 @@ namespace OptionCo
 
         public string Name
         {
-            get { return _name; }
-            set { _name = value; }
+            get => _name;
+            set => _name = value;
         }
 
         public string Email
         {
-            get { return _email; }
-            set { _email = value; }
+            get => _email;
+            set => _email = value;
         }
 
         public string MobilePhone
         {
-            get { return _mobilePhone; }
-            set { _mobilePhone = value; }
+            get => _mobilePhone;
+            set => _mobilePhone = value;
         }
 
         public string HomePhone
         {
-            get { return _homePhone; }
-            set { _homePhone = value; }
+            get => _homePhone;
+            set => _homePhone = value;
         }
 
         public int Id
         {
-            get { return _id; }
-            set { _id = value; }
+            get => _id;
+            set => _id = value;
         }
 
         public List<Device> Devices
         {
-            get { return _devices; }
-            set { _devices = value; }
+            get => _devices;
+            set => _devices = value;
         }
 
         public Customer(int id, string name, string email, string mobilePhone, string homePhone, List<Device> devices)

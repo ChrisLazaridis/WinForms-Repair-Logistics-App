@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SQLite;
 
@@ -22,6 +16,7 @@ namespace OptionCo
         private StringCompare _stringCompare = new StringCompare();
         private Device _selectedDevice;
         private Repair _selectedRepair;
+        private string _newStatus;
 
         public Form1()
         {
@@ -74,7 +69,7 @@ namespace OptionCo
 
         private void ShowCustomerInfo(Control richTexBox, Customer c)
         {
-            richTexBox.Text = "name:" + c.Name + "\n" + "email" + c.Email + "\n" + "mobile" + c.MobilePhone + "\n" + "Home Phone" + c.HomePhone;
+            richTexBox.Text = "name: " + c.Name + "\n" + "email: " + c.Email + "\n" + "mobile: " + c.MobilePhone + "\n" + "Home Phone: " + c.HomePhone;
         }
 
         private void ShowInfo(Control richTextBox, Repair d)
@@ -116,7 +111,7 @@ namespace OptionCo
         {
             foreach (var t in _customers)
             {
-                if (_stringCompare.Calculate(textBoxName.Text, t.Name) <= 2)
+                if (_stringCompare.Calculate(textBoxName.Text, t.Name) <= 8)
                 {
                     listBox1.Items.Add(t.Name);
                 }
@@ -125,10 +120,23 @@ namespace OptionCo
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            foreach (var t in _customers.Where(t => listBox1.SelectedItem.ToString() == t.Name))
+            try
             {
-                _selectedCustomer = t;
-                ShowCustomerInfo(richTextBox1, t);
+                foreach (var t in _customers.Where(t => listBox1.SelectedItem.ToString() == t.Name))
+                {
+                    _selectedCustomer = t;
+                    ShowCustomerInfo(richTextBox1, t);
+                }
+
+                //also show every device the customer has
+                foreach (var t in _selectedCustomer.Devices)
+                {
+                    listBox2.Items.Add(t.SerialKey);
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
             }
         }
 
@@ -145,27 +153,46 @@ namespace OptionCo
 
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            richTextBox2.Clear();
-
-            foreach (var t in _devices.Where(t => string.Equals(listBox2.SelectedItem?.ToString(), t.SerialKey)))
+            try
             {
-                _selectedDevice = t;
+                richTextBox2.Clear();
 
-                foreach (var r in t.Repair)
+                foreach (var t in _devices.Where(t => string.Equals(listBox2.SelectedItem?.ToString(), t.SerialKey)))
                 {
-                    listBox3.Items.Add(r.DateIn);
+                    _selectedDevice = t;
+                    listBox3.ClearSelected();
+                    foreach (var r in t.Repair)
+                    {
+                        listBox3.Items.Add(r.DateIn);
+                    }
                 }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
             }
         }
 
         private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            foreach (var t in _selectedDevice.Repair.Where(t =>
-                         string.Equals(listBox3.SelectedItem?.ToString(), t.DateIn)))
+            try
             {
-               ShowInfo(richTextBox2, t);
-               _selectedRepair = t;
+                foreach (var t in _selectedDevice.Repair.Where(t =>
+                             string.Equals(listBox3.SelectedItem?.ToString(), t.DateIn)))
+                {
+                    ShowInfo(richTextBox2, t);
+                    _selectedRepair = t;
 
+                }
+
+                button2.Enabled = true;
+                button2.Visible = true;
+                comboBox3.Enabled = true;
+                comboBox3.Visible = true;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
             }
         }
 
@@ -205,6 +232,53 @@ namespace OptionCo
         {
             Form9 form9 = new Form9(_customers, _devices, _repairs);
             form9.ShowDialog();
+            GetData();
+            Refresh();
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // if the user want to change to "completed" enable the datetimepicker
+            if ((string)comboBox3.SelectedItem == "Finished")
+            {
+                dateTimePicker1.Visible = true;
+                dateTimePicker1.Enabled = true;
+            }
+            else
+            {
+                dateTimePicker1.Visible = false;
+                dateTimePicker1.Enabled = false;
+            }
+            _newStatus = comboBox3.SelectedItem.ToString();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (_selectedRepair == null || _newStatus == null) return;
+            // update the status of the repair in the database
+            if (_newStatus == "Finished")
+            {
+                using var dbConnection = new SQLiteConnection(_dbConnection.ConnectionString);
+                dbConnection.Open();
+                using var cmd = new SQLiteCommand(dbConnection);
+                cmd.CommandText = "UPDATE Repair SET Status = @Status, DateOut = @DateOut WHERE ID = @Id";
+                cmd.Parameters.AddWithValue("@Status", _newStatus);
+                cmd.Parameters.AddWithValue("@DateOut", dateTimePicker1.Value.ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@Id", _selectedRepair.Id);
+                cmd.ExecuteNonQuery();
+                MessageBox.Show("Status updated");
+            }
+            else
+            {
+                using var dbConnection = new SQLiteConnection(_dbConnection.ConnectionString);
+                dbConnection.Open();
+                using var cmd = new SQLiteCommand(dbConnection);
+                cmd.CommandText = "UPDATE Repair SET Status = @Status WHERE ID = @Id";
+                cmd.Parameters.AddWithValue("@Status", _newStatus);
+                cmd.Parameters.AddWithValue("@Id", _selectedRepair.Id);
+                cmd.ExecuteNonQuery();
+                MessageBox.Show("Status updated");
+            }
             GetData();
             Refresh();
         }

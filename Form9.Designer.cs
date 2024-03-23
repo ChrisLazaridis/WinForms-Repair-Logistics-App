@@ -31,11 +31,12 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBoxSearchByCustomer = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.dateTimePickerFinish = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
+            this.comboBoxCustomers = new System.Windows.Forms.ComboBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,8 +53,9 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.comboBoxCustomers);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.textBoxSearchByCustomer);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.dateTimePickerFinish);
@@ -72,13 +74,6 @@
             this.label3.Size = new System.Drawing.Size(182, 24);
             this.label3.TabIndex = 17;
             this.label3.Text = "Search By Customer";
-            // 
-            // textBoxSearchByCustomer
-            // 
-            this.textBoxSearchByCustomer.Location = new System.Drawing.Point(442, 30);
-            this.textBoxSearchByCustomer.Name = "textBoxSearchByCustomer";
-            this.textBoxSearchByCustomer.Size = new System.Drawing.Size(331, 20);
-            this.textBoxSearchByCustomer.TabIndex = 16;
             // 
             // label2
             // 
@@ -107,6 +102,7 @@
             this.dateTimePickerFinish.Name = "dateTimePickerFinish";
             this.dateTimePickerFinish.Size = new System.Drawing.Size(200, 20);
             this.dateTimePickerFinish.TabIndex = 1;
+            this.dateTimePickerFinish.ValueChanged += new System.EventHandler(this.dateTimePickerFinish_ValueChanged);
             // 
             // dateTimePickerStart
             // 
@@ -115,6 +111,26 @@
             this.dateTimePickerStart.Name = "dateTimePickerStart";
             this.dateTimePickerStart.Size = new System.Drawing.Size(200, 20);
             this.dateTimePickerStart.TabIndex = 0;
+            this.dateTimePickerStart.ValueChanged += new System.EventHandler(this.dateTimePickerStart_ValueChanged);
+            // 
+            // comboBoxCustomers
+            // 
+            this.comboBoxCustomers.FormattingEnabled = true;
+            this.comboBoxCustomers.Location = new System.Drawing.Point(442, 30);
+            this.comboBoxCustomers.Name = "comboBoxCustomers";
+            this.comboBoxCustomers.Size = new System.Drawing.Size(178, 21);
+            this.comboBoxCustomers.TabIndex = 18;
+            this.comboBoxCustomers.SelectedIndexChanged += new System.EventHandler(this.comboBoxCustomers_SelectedIndexChanged);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(626, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(150, 50);
+            this.button1.TabIndex = 19;
+            this.button1.Text = "Refresh";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form9
             // 
@@ -138,8 +154,9 @@
         private System.Windows.Forms.DateTimePicker dateTimePickerFinish;
         private System.Windows.Forms.DateTimePicker dateTimePickerStart;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBoxSearchByCustomer;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox comboBoxCustomers;
+        private System.Windows.Forms.Button button1;
     }
 }

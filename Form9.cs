@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OptionCo
@@ -14,125 +11,174 @@ namespace OptionCo
     public partial class Form9 : Form
     {
         private List<Repair> _repairs;
-        private readonly DBConnection _dbConnection = new DBConnection("option.db");
+        private readonly DBConnection _dbConnection = new("option.db");
         private List<Customer> _customers;
         private List<Device> _devices;
+        private string _selectedCustomer;
+        private string _dateFrom;
+        private string _dateTo;
+
         private StringCompare _stringCompare = new StringCompare();
+
         public Form9(List<Customer> customers, List<Device> devices, List<Repair> repairs)
         {
             InitializeComponent();
             _customers = customers;
             _devices = devices;
             _repairs = repairs;
-            ShowRepairs(flowLayoutPanel1);
-        }
-
-        private void ShowRepairs(Control FlowLayoutPanel)
-        {
-            FlowLayoutPanel.Controls.Clear();
-            // sort the repairs, so that they are shown in the order first: Pending, then: Completed Repair, the Finished
-            var sortingOrder = new Dictionary<string, int>()
+            ShowRepairs(flowLayoutPanel1, "all", "none", "none");
+            comboBoxCustomers.Items.Add("all");
+            foreach (var customer in _customers)
             {
-                {"Pending", 1},
-                {"Completed Repair", 2},
-                {"Finished", 3}
-            };
-            var sortedRepairs = _repairs.OrderBy(r => sortingOrder[r.Status]).ToList();
-            // now show an interactive UI for each repair, you should show the status, date in, and if the status is not finished, a button to change the status and a datetime picker for the dateout when the user elects to change the status (the datetime picker should be hidden by default and activated once and only once the status is set to Finish, use a combobox to change that)
-            foreach (var repair in sortedRepairs)
-            {
-                Panel panel = new Panel();
-                panel.Width = FlowLayoutPanel.Width;
-                panel.Height = 250;  // Set a reasonable height, adjust as needed
-
-                Label statusLabel = new Label();
-                statusLabel.Text = "Status: " + repair.Status;
-                statusLabel.Location = new Point(10, 10);  // Adjust the position as needed
-                panel.Controls.Add(statusLabel);
-
-                Label dateInLabel = new Label();
-                dateInLabel.Text = "Date In: " + repair.DateIn.ToString();
-                dateInLabel.Location = new Point(10, 30);  // Adjust the position as needed
-                panel.Controls.Add(dateInLabel);
-
-                if (repair.Status != "Finished")
-                {
-                    Button changeStatusButton = new Button();
-                    changeStatusButton.Text = "Change Status";
-                    changeStatusButton.Click += ChangeStatusButton_Click;
-                    changeStatusButton.Location = new Point(10, 50);  // Adjust the position as needed
-                    panel.Controls.Add(changeStatusButton);
-
-                    DateTimePicker dateOutPicker = new DateTimePicker();
-                    dateOutPicker.Visible = false;
-                    dateOutPicker.Location = new Point(10, 70);  // Adjust the position as needed
-                    panel.Controls.Add(dateOutPicker);
-
-                    Label customerNameLabel = new Label();
-                    Customer customer = _customers.FirstOrDefault(c => c.Id == repair.CustomerId);
-                    customerNameLabel.Text = "Customer Name: " + customer.Name;
-                    customerNameLabel.Location = new Point(10, 90);  // Adjust the position as needed
-                    panel.Controls.Add(customerNameLabel);
-
-                    Label customerMobileLabel = new Label();
-                    customerMobileLabel.Text = "Customer Mobile: " + customer.MobilePhone;
-                    customerMobileLabel.Location = new Point(10, 110);  // Adjust the position as needed
-                    panel.Controls.Add(customerMobileLabel);
-
-                    Label deviceSerialLabel = new Label();
-                    Device device = _devices.FirstOrDefault(d => d.Id == repair.DeviceId);
-                    deviceSerialLabel.Text = "Device Serial: " + device.SerialKey;
-                    deviceSerialLabel.Location = new Point(10, 130);  // Adjust the position as needed
-                    panel.Controls.Add(deviceSerialLabel);
-
-                    Label descriptionLabel = new Label();
-                    descriptionLabel.Text = "Description: " + repair.Description;
-                    descriptionLabel.Location = new Point(10, 150);  // Adjust the position as needed
-                    panel.Controls.Add(descriptionLabel);
-
-                    Button deleteButton = new Button();
-                    deleteButton.Name = repair.Id.ToString();
-                    deleteButton.Text = "Delete Repair";
-                    deleteButton.Click += DeleteButton_Click;
-                    deleteButton.Location = new Point(10, 170);  // Adjust the position as needed
-                    panel.Controls.Add(deleteButton);
-                }
-                FlowLayoutPanel.Controls.Add(panel);
+                comboBoxCustomers.Items.Add(customer.Name);
             }
 
-            void ChangeStatusButton_Click(object sender, EventArgs e)
-            {
-                Button button = (Button)sender;
-                Panel panel = (Panel)button.Parent;
-                DateTimePicker dateOutPicker = panel.Controls.OfType<DateTimePicker>().FirstOrDefault();
-                dateOutPicker.Visible = true;
-            }
-
-            void DeleteButton_Click(object sender, EventArgs e)
-            {
-                Button button = (Button)sender;
-                Panel panel = (Panel)button.Parent;
-                FlowLayoutPanel.Controls.Remove(panel);
-                foreach (var repair in _repairs.Where(r => r.Id == int.Parse(button.Name)))
-                {
-                    DeleteRepair(repair);
-                    _repairs.Remove(repair);
-                    return;
-                }
-
-            }
-            // other than that the UI should also have the the customer name,customer mobile phone, device serial number, and the description of the repair, also a button to delete the repair. each button will be associate with an event of course
-            // The customer associated with the repair can be found by using the customer id of the repair and the customer list
-            // keep in mind the flow direction of the flow layout panel is left to right and I want each recording to always span an entire row of the layout panel, do it by adding a panel to the flow layout panel, with width equal to the width of the flowlayout panel and then adding the controls to the panel
-            // the events for the combobox and the buttons have to be separate functions, just reference them and they are going to be created later
-            
-
+            comboBoxCustomers.SelectedIndex = 0;
 
         }
 
-        private void DeleteRepair(Repair r)
+        private void ShowRepairs(Control FlowLayoutPanel, string customerName, string date1, string date2)
         {
-            //delete the 
+            _repairs.Clear();
+
+            // Parsing date1 and date2
+            if (!DateTime.TryParseExact(date1, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date1Value))
+            {
+                date1Value = DateTime.MinValue;
+                date1 = "none";
+            }
+            if (!DateTime.TryParseExact(date2, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date2Value))
+            {
+                date2Value = DateTime.MaxValue;
+                date2 = "none";
+            }
+
+            // Adjusting date1 if it's later than date2
+            if (date1Value > date2Value)
+            {
+                date1Value = date2Value.AddDays(-1);
+                date1 = date1Value.ToString("yyyy-MM-dd");
+            }
+
+            foreach (var customer in _customers.Where(c => customerName == "all" || c.Name == customerName))
+            {
+                foreach (var device in customer.Devices)
+                {
+                    foreach (var repair in device.Repair)
+                    {
+                        if (!DateTime.TryParseExact(repair.DateIn, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var repairDate))
+                            continue;
+                        if ((repairDate < date1Value || repairDate > date2Value) &&
+                            (date1 != "none" || repairDate > date2Value) &&
+                            (date2 != "none" || repairDate < date1Value)) continue;
+                        _repairs.Add(repair);
+                        var panel = new Panel();
+                        panel.Size = new Size(200, 200);
+                        panel.BorderStyle = BorderStyle.FixedSingle;
+                        panel.Margin = new Padding(5);
+                        panel.Tag = repair;
+                        var label1 = new Label();
+                        label1.Text = "Customer: " + customer.Name;
+                        label1.AutoSize = true;
+                        label1.Location = new Point(10, 10);
+                        panel.Controls.Add(label1);
+                        var label2 = new Label();
+                        label2.Text = "Device: " + device.DeviceType;
+                        label2.AutoSize = true;
+                        label2.Location = new Point(10, 30);
+                        panel.Controls.Add(label2);
+                        var label3 = new Label();
+                        label3.Text = "Serial Key: " + device.SerialKey;
+                        label3.AutoSize = true;
+                        label3.Location = new Point(10, 50);
+                        panel.Controls.Add(label3);
+                        var label4 = new Label();
+                        label4.Text = "Date In: " + repair.DateIn;
+                        label4.AutoSize = true;
+                        label4.Location = new Point(10, 70);
+                        panel.Controls.Add(label4);
+                        var label5 = new Label();
+                        label5.Text = "Date Out: " + repair.DateOut;
+                        label5.AutoSize = true;
+                        label5.Location = new Point(10, 90);
+                        panel.Controls.Add(label5);
+                        var label6 = new Label();
+                        label6.Text = "Description: " + repair.Description;
+                        label6.AutoSize = true;
+                        label6.Location = new Point(10, 110);
+                        panel.Controls.Add(label6);
+                        var button = new Button();
+                        button.Text = "Delete";
+                        button.Location = new Point(10, 130);
+                        button.Click += (sender, args) =>
+                        {
+                            if (DeleteRepair(repair))
+                            {
+                                panel.Dispose();
+                            }
+
+                        };
+                        panel.Controls.Add(button);
+                        FlowLayoutPanel.Controls.Add(panel);
+                    }
+                }
+            }
+        }
+
+        private bool DeleteRepair(Repair r)
+        {
+            // Delete the repair from the database
+            try
+            {
+                using var dbConnection = new SQLiteConnection(_dbConnection.ConnectionString);
+                dbConnection.Open();
+                using var cmd = new SQLiteCommand(dbConnection);
+                cmd.CommandText = "DELETE FROM Repair WHERE ID = @Id";
+                cmd.Parameters.AddWithValue("@Id", r.Id);
+                cmd.ExecuteNonQuery();
+                dbConnection.Close();
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
+
+        }
+
+        private void comboBoxCustomers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            flowLayoutPanel1.Controls.Clear();
+            ShowRepairs(flowLayoutPanel1, comboBoxCustomers.SelectedItem.ToString(), "none", "none");
+            _selectedCustomer = comboBoxCustomers.SelectedItem.ToString();
+        }
+
+        private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
+        {
+            _dateFrom = dateTimePickerStart.Value.ToString("yyyy-MM-dd");
+            flowLayoutPanel1.Controls.Clear();
+            ShowRepairs(flowLayoutPanel1, _selectedCustomer, _dateFrom, _dateTo != "none" ? _dateTo : "none");
+        }
+
+        private void dateTimePickerFinish_ValueChanged(object sender, EventArgs e)
+        {
+            _dateTo = dateTimePickerFinish.Value.ToString("yyyy-MM-dd");
+            flowLayoutPanel1.Controls.Clear();
+            ShowRepairs(flowLayoutPanel1, _selectedCustomer, _dateFrom != "none" ? _dateFrom : "none", _dateTo);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            _selectedCustomer = "all";
+            _dateFrom = "none";
+            _dateTo = "none";
+            comboBoxCustomers.SelectedIndex = 0;
+            dateTimePickerStart.Value = DateTime.Now;
+            dateTimePickerFinish.Value = DateTime.Now;
+            flowLayoutPanel1.Controls.Clear();
+            ShowRepairs(flowLayoutPanel1, "all", "none", "none");
         }
     }
 }
+
